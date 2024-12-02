@@ -32,14 +32,14 @@ export default function Result() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const result = await axios.post("http://127.0.0.1:5000/process/", formData, {
+      const result = await axios.post("https://api.clearmybackground.com/process/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       setTabs((prevTabs) =>
         prevTabs.map((t) =>
           t.id === tabId
-            ? { ...t, processedImageUrl: `http://127.0.0.1:5000${result.data.url}`, isProcessing: false }
+            ? { ...t, processedImageUrl: `https://api.clearmybackground.com${result.data.url}`, isProcessing: false }
             : t
         )
       );
