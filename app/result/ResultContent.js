@@ -10,7 +10,7 @@ export default function Result() {
   const searchParams = useSearchParams();
   const initialImageUrl = searchParams.get("imageUrl");
   const [tabs, setTabs] = useState([
-    { id: 1, imageUrl: initialImageUrl, processedImageUrl: null, isProcessing: !!initialImageUrl },
+    { id: 1, imageUrl: initialImageUrl, processedImageUrl: null, isProcessing: true },
   ]);
   const [activeTab, setActiveTab] = useState(1);
 
@@ -40,15 +40,12 @@ export default function Result() {
       setTabs((prevTabs) =>
         prevTabs.map((t) =>
           t.id === tabId
-            ? { ...t, processedImageUrl: result.data.url, isProcessing: false }
+            ? { ...t, processedImageUrl: `https://api.clearmybackground.com${result.data.url}`, isProcessing: false }
             : t
         )
       );
     } catch (error) {
       console.error("Error processing image:", error);
-      setTabs((prevTabs) =>
-        prevTabs.map((t) => (t.id === tabId ? { ...t, isProcessing: false } : t))
-      );
     }
   };
 
@@ -62,18 +59,13 @@ export default function Result() {
     const file = event.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const imageUrl = reader.result;
+    const imageUrl = URL.createObjectURL(file);
 
-      setTabs((prevTabs) =>
-        prevTabs.map((t) => (t.id === tabId ? { ...t, imageUrl, isProcessing: true } : t))
-      );
+    setTabs((prevTabs) =>
+      prevTabs.map((t) => (t.id === tabId ? { ...t, imageUrl, isProcessing: true } : t))
+    );
 
-      processImage(tabId); // Process the uploaded image
-    };
-
-    reader.readAsDataURL(file);
+    processImage(tabId); // Process the uploaded image
   };
 
   const handleDownload = async (tabId) => {
@@ -103,10 +95,7 @@ export default function Result() {
           {tabs.map(
             (tab) =>
               activeTab === tab.id && (
-                <div
-                  key={tab.id}
-                  className="relative w-[600px] h-[400px] rounded-lg shadow-lg flex flex-col items-center justify-center overflow-hidden bg-gray-100"
-                >
+                <div key={tab.id} className="relative w-[600px] h-[400px] rounded-lg shadow-lg flex flex-col items-center justify-center overflow-hidden bg-checkered">
                   {tab.isProcessing ? (
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                       <div className="loader border-t-4 border-b-4 border-blue-500 rounded-full w-16 h-16 animate-spin"></div>
@@ -173,7 +162,7 @@ export default function Result() {
           </div>
         </main>
       </div>
-      <Footer />
+      <Footer/>
     </>
   );
 }
