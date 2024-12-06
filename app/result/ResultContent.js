@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "@/components/header/page";
+import Footer from "@/components/footer/page";
 
 export default function Result() {
   const searchParams = useSearchParams();
@@ -161,6 +162,7 @@ export default function Result() {
           </div>
         </main>
       </div>
+      <Footer/>
     </>
   );
 }
