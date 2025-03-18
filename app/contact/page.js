@@ -15,11 +15,11 @@ export default function Contact() {
         <meta property="og:description" content="Get in touch with the ClearMyBackground.com team for inquiries, feedback, or support. Contact us via email, phone, or by using our contact form." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://clearmybackground.com/contact" />
-        <meta property="og:image" content="https://clearmybackground.com/og-image.jpg" />
+        <meta property="og:image" content="https://clearmybackground.com/logo.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Contact Us | ClearMyBackground.com" />
+        <meta name="twitter:title" content="Contact Us | ClearMyBackground" />
         <meta name="twitter:description" content="Get in touch with the ClearMyBackground.com team for inquiries, feedback, or support. Contact us via email, phone, or by using our contact form." />
-        <meta name="twitter:image" content="https://clearmybackground.com/twitter-image.jpg" />
+        <meta name="twitter:image" content="https://clearmybackground.com/logo.png" />
       </Head>
       <body>
         <div className="min-h-screen bg-gray-50 flex flex-col items-center">

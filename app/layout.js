@@ -1,75 +1,58 @@
-import { Roboto } from "next/font/google"; // Replace Roboto with ParkinSans if available
-import "./globals.css";
-import 'react-before-after-slider-component/dist/build.css';
 
-// Use the Google Font
-const parkinSans = Roboto({
-  subsets: ["latin"], // Adjust subsets as needed
-  weight: ["100", "300", "400", "500", "700", "900"], // Specify weights as required
-  variable: "--font-parkin-sans", // Variable to use in CSS
+import { Orbitron } from "next/font/google";
+import "./globals.css";
+import "react-before-after-slider-component/dist/build.css";
+
+// Use the Google Font: Orbitron
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  weight: ["400", "500", "700", "900"], // Selected weights for flexibility
+  variable: "--font-orbitron", // CSS variable for easy use
 });
 
 export const metadata = {
-  title: "Background Removing Online | Free Transparent Background Tool",
+  // General SEO Metadata
+  title: "AI Background Remover - Free Online Tool | ClearMyBackground",
   description:
-    "Effortlessly remove backgrounds from images, photos, and pictures for free. Create transparent backgrounds or PNGs online with our easy-to-use tool.",
-  keywords: [
-    "background removing",
-    "removing background from image",
-    "removing background from picture",
-    "transparent background",
-    "removing background from photos",
-    "clear photo background",
-    "free removing background from image",
-    "clear backgrounds",
-    "make background transparent",
-    "make image transparent",
-    "create transparent background",
-    "make png transparent",
-    "make image background transparent",
-    "make image transparent online",
-    "make a photo transparent",
-    "transparent background png",
-    "make photo background transparent",
-    "transparent background images",
-    "removing white background from image",
-    "png to transparent background",
-    "make picture background transparent",
-    "transparent background online",
-    "make picture transparent online",
-    "create image with transparent background",
-    "make a picture transparent background",
-    "png clear background",
-    "removing background from png",
-    "removing background from image online",
-    "removing background online free",
-    "background removing online",
-  ].join(", "),
+    "Remove backgrounds from images, photos, and pictures effortlessly with our free AI-powered tool. Create transparent PNGs online instantly for design, e-commerce, and more.",
+  keywords:
+    "AI background remover, remove background online, free background removal, transparent background maker, AI image editor, background eraser, transparent PNG creator, remove bg free, clear photo background, make image transparent online",
+
+  // Robots and Viewport
+  robots: "index, follow",
+  viewport: "width=device-width, initial-scale=1.0",
+
+  // Open Graph Tags for Social Sharing
+  openGraph: {
+    title: "AI Background Remover - Free Online Tool",
+    description:
+      "Instantly remove backgrounds from images with our free AI tool. Create transparent backgrounds online effortlessly.",
+    url: "https://yourwebsite.com/", // Replace with your actual domain
+    type: "website",
+    images: [
+      {
+        url: "https://yourwebsite.com/og-image.jpg", // Replace with your actual OG image
+        width: 1200,
+        height: 630,
+        alt: "AI Background Remover Preview",
+      },
+    ],
+  },
+
+  // Twitter Card Tags
+  twitter: {
+    card: "summary_large_image",
+    title: "AI Background Remover - Free Online Tool",
+    description:
+      "Use our free AI tool to remove backgrounds and create transparent PNGs online instantly.",
+    image: "https://clearmybackground.com/logo.png", // Replace with your actual image
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content={metadata.description} />
-        <meta name="keywords" content={metadata.keywords} />
-        <meta name="author" content="Clear My B" />
-        <meta property="og:title" content={metadata.title} />
-        <meta property="og:description" content={metadata.description} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://clearmybackground.com" />
-        <meta property="og:image" content="https://clearmybackground.com/og-image.jpg" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={metadata.title} />
-        <meta name="twitter:description" content={metadata.description} />
-        <meta name="twitter:image" content="https://clearmybackground.com/twitter-image.jpg" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="canonical" href="https://clearmybackground.com" />
-        <title>{metadata.title}</title>
-      </head>
-      <body className={`${parkinSans.variable} antialiased`}>
+      <body className={`${orbitron.variable} antialiased`}>
         {children}
       </body>
     </html>

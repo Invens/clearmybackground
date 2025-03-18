@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://clearmybackground.com
+
+# Sitemaps
+Sitemap: https://clearmybackground.com/sitemap.xml

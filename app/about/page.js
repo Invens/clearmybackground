@@ -6,6 +6,7 @@ export const metadata = {
     "Learn about ClearMyBackground.com, our mission, team, and commitment to building tools that simplify lives. Meet the innovators behind the scenes.",
   keywords: [
     "about us",
+    "ai background remover",
     "ClearMyBackground",
     "Appmontize Media",
     "team behind ClearMyBackground",
@@ -28,11 +29,11 @@ export default function About() {
         <meta property="og:description" content={metadata.description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://clearmybackground.com/about" />
-        <meta property="og:image" content="https://clearmybackground.com/og-image.jpg" />
+        <meta property="og:image" content="https://clearmybackground.com/logo.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metadata.title} />
         <meta name="twitter:description" content={metadata.description} />
-        <meta name="twitter:image" content="https://clearmybackground.com/twitter-image.jpg" />
+        <meta name="twitter:image" content="https://clearmybackground.com/logo.png" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="canonical" href="https://clearmybackground.com/about" />
         <title>{metadata.title}</title>
