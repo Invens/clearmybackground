@@ -22,14 +22,14 @@ function Footer() {
         <div className="flex items-center mb-6 md:mb-0">
           <Image
             id="footer-logo"
-            src="/logo.png"
-            alt="ClearMyBackground Logo - AI Background Remover"
+            src="/clean.png"
+            alt="cleanmybg Logo - AI Background Remover"
             width={1000}
             height={1000}
-            className="w-12 h-12 rounded-full border border-blue-500 transition-all duration-300"
+            className="w-20 h-20  transition-all duration-300"
           />
           <h1 className="ml-3 text-xl font-bold tracking-wide bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            ClearMy<span className="text-gray-300">Background</span>
+            CleanMy<span className="text-gray-300">Bg</span>
           </h1>
         </div>
 
@@ -47,6 +47,13 @@ function Footer() {
             className="text-gray-300 hover:text-blue-400 hover:shadow-glow transition-all duration-300 relative group"
           >
             Privacy Policy
+            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-400 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
+          </Link>
+          <Link
+            href="/terms"
+            className="text-gray-300 hover:text-blue-400 hover:shadow-glow transition-all duration-300 relative group"
+          >
+            Terms & Conditions
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-400 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
           </Link>
           <Link
@@ -68,7 +75,7 @@ function Footer() {
         {/* Right Section: Copyright */}
         <div className="mt-6 md:mt-0 text-center text-sm">
           <p className="text-gray-400">
-            © {new Date().getFullYear()} ClearMyBackground. All rights reserved.
+            © {new Date().getFullYear()} cleanmybg. All rights reserved.
           </p>
         </div>
       </div>

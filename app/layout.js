@@ -2,6 +2,8 @@
 import { Orbitron } from "next/font/google";
 import "./globals.css";
 import "react-before-after-slider-component/dist/build.css";
+import ClientProviders from "@/components/ClientProviders"; // adjust path as needed
+
 
 // Use the Google Font: Orbitron
 const orbitron = Orbitron({
@@ -12,7 +14,7 @@ const orbitron = Orbitron({
 
 export const metadata = {
   // General SEO Metadata
-  title: "AI Background Remover - Free Online Tool | ClearMyBackground",
+  title: "AI Background Remover - Free Online Tool | cleanmybg",
   description:
     "Remove backgrounds from images, photos, and pictures effortlessly with our free AI-powered tool. Create transparent PNGs online instantly for design, e-commerce, and more.",
   keywords:
@@ -45,7 +47,7 @@ export const metadata = {
     title: "AI Background Remover - Free Online Tool",
     description:
       "Use our free AI tool to remove backgrounds and create transparent PNGs online instantly.",
-    image: "https://clearmybackground.com/logo.png", // Replace with your actual image
+    image: "https://cleanmybg.com/logo.png", // Replace with your actual image
   },
 };
 
@@ -53,7 +55,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${orbitron.variable} antialiased`}>
-        {children}
+     
+      <ClientProviders>
+          {children}
+        </ClientProviders>
+
       </body>
     </html>
   );

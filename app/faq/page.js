@@ -1,14 +1,14 @@
 import Header from "@/components/header/page";
 
 export const metadata = {
-  title: "FAQs | ClearMyBackground.com",
+  title: "FAQs | cleanmybg.com",
   description:
-    "Find answers to frequently asked questions about ClearMyBackground.com. Learn about background removal, supported formats, transparent PNGs, and more.",
+    "Find answers to frequently asked questions about cleanmybg.com. Learn about background removal, supported formats, transparent PNGs, and more.",
   keywords: [
     "FAQs",
     "frequently asked questions",
     "background removal FAQs",
-    "ClearMyBackground FAQs",
+    "cleanmybg FAQs",
     "image tools help",
     "background remover questions",
     "background removal tool FAQs",
@@ -25,7 +25,7 @@ const faqData = [
   {
     question: "How can I remove a background from an image?",
     answer:
-      "You can remove a background by using tools like ClearMyBackground.com. Upload your image, and the tool will automatically detect and remove the background.",
+      "You can remove a background by using tools like cleanmybg.com. Upload your image, and the tool will automatically detect and remove the background.",
   },
   {
     question: "Is background removal free on your site?",
@@ -146,14 +146,14 @@ export default function FAQ() {
         <meta property="og:title" content={metadata.title} />
         <meta property="og:description" content={metadata.description} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://clearmybackground.com/faq" />
-        <meta property="og:image" content="https://clearmybackground.com/logo.png" />
+        <meta property="og:url" content="https://cleanmybg.com/faq" />
+        <meta property="og:image" content="https://cleanmybg.com/logo.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metadata.title} />
         <meta name="twitter:description" content={metadata.description} />
-        <meta name="twitter:image" content="https://clearmybackground.com/logo.png" />
+        <meta name="twitter:image" content="https://cleanmybg.com/logo.png" />
         <link rel="icon" href="/favicon.ico" />
-        <link rel="canonical" href="https://clearmybackground.com/faq" />
+        <link rel="canonical" href="https://cleanmybg.com/faq" />
         <title>{metadata.title}</title>
         <script
           type="application/ld+json"

@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://clearmybackground.com
+Host: https://cleanmybg.com
 
 # Sitemaps
-Sitemap: https://clearmybackground.com/sitemap.xml
+Sitemap: https://cleanmybg.com/sitemap.xml

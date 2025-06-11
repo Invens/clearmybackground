@@ -1,18 +1,18 @@
 import Header from "@/components/header/page";
-
+import Link from "next/link";
 export const metadata = {
-  title: "About Us | ClearMyBackground.com",
+  title: "About Us | cleanmybg.com",
   description:
-    "Learn about ClearMyBackground.com, our mission, team, and commitment to building tools that simplify lives. Meet the innovators behind the scenes.",
+    "Learn about cleanmybg.com, our mission, team, and commitment to building tools that simplify lives. Meet the innovators behind the scenes.",
   keywords: [
     "about us",
     "ai background remover",
-    "ClearMyBackground",
+    "cleanmybg",
     "Appmontize Media",
-    "team behind ClearMyBackground",
+    "team behind cleanmybg",
     "our mission",
     "tech innovations",
-    "about ClearMyBackground.com",
+    "about cleanmybg.com",
     "background removal tool team",
   ].join(", "),
 };
@@ -28,105 +28,97 @@ export default function About() {
         <meta property="og:title" content={metadata.title} />
         <meta property="og:description" content={metadata.description} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://clearmybackground.com/about" />
-        <meta property="og:image" content="https://clearmybackground.com/logo.png" />
+        <meta property="og:url" content="https://cleanmybg.com/about" />
+        <meta property="og:image" content="https://cleanmybg.com/logo.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metadata.title} />
         <meta name="twitter:description" content={metadata.description} />
-        <meta name="twitter:image" content="https://clearmybackground.com/logo.png" />
+        <meta name="twitter:image" content="https://cleanmybg.com/logo.png" />
         <link rel="icon" href="/favicon.ico" />
-        <link rel="canonical" href="https://clearmybackground.com/about" />
+        <link rel="canonical" href="https://cleanmybg.com/about" />
         <title>{metadata.title}</title>
       </head>
       <body>
         <div className="min-h-screen bg-gray-50 flex flex-col items-center">
           <Header />
+          <div className="min-h-screen bg-gradient-to-br from-indigo-900 to-cyan-900 flex flex-col items-center justify-center px-4 sm:px-6 py-12 font-inter">
+        <main className="w-full max-w-4xl glass-effect p-8 rounded-3xl shadow-xl transition-all duration-300 mt-24">
+          <h1 className="text-3xl font-bold text-cyan-300 mb-6 text-center">
+            About CleanMyBg
+          </h1>
+          <p className="text-gray-200 text-lg mb-6 text-center">
+            Simplifying Image Editing with Cutting-Edge Technology
+          </p>
 
-          <main className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-8 mt-8">
-            {/* Introduction Section */}
-            <section className="mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Who We Are</h2>
-              <p className="text-gray-700 leading-relaxed">
-                At <span className="font-bold">Appmontize Media</span>, we are driven by a passion
-                to build tools that simplify daily life. Founded in Singapore, our company has
-                established itself as a forward-thinking media enterprise committed to creating
-                innovative solutions that cater to diverse needs. Our tools are designed to make
-                life easier for individuals, businesses, and professionals worldwide.
-              </p>
-            </section>
+          <section className="mb-8">
+            <h2 className="text-xl font-semibold text-cyan-300 mb-4">Who We Are</h2>
+            <p className="text-gray-200 mb-4">
+              Welcome to <strong>CleanMyBg</strong>, your go-to platform for effortless image background removal. We are a proud product of <strong>CYPHERNXT LABS LLP</strong>, an innovative technology company based in New Delhi, India. At CleanMyBg, we empower creators, businesses, and individuals to transform their images with ease, delivering professional-grade results in just a few clicks.
+            </p>
+            <p className="text-gray-200">
+              Founded under the vision of CYPHERNXT LABS LLP, CleanMyBg combines advanced AI-driven algorithms with a user-friendly interface to make image editing accessible to everyone. Whether you’re enhancing product photos, creating stunning visuals, or simply removing unwanted backgrounds, we’re here to streamline your creative process.
+            </p>
+          </section>
 
-            {/* Mission Section */}
-            <section className="mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Our Mission</h2>
-              <p className="text-gray-700 leading-relaxed">
-                Our mission is simple yet impactful:{" "}
-                <span className="font-bold">
-                  to create tools that improve the quality of life through efficiency and
-                  innovation.
-                </span>{" "}
-                By focusing on everyday challenges, we aim to empower users with tools that
-                streamline processes, save time, and enhance productivity.
-              </p>
-              <p className="text-gray-700 leading-relaxed mt-4">
-                Our solutions are built with a focus on accessibility, scalability, and
-                user-friendliness, ensuring they cater to everyone – from individual users to
-                large-scale enterprises.
-              </p>
-            </section>
+          <section className="mb-8">
+            <h2 className="text-xl font-semibold text-cyan-300 mb-4">Our Mission</h2>
+            <p className="text-gray-200">
+              Our mission is to democratize image editing by providing a fast, reliable, and affordable solution for background removal. We aim to remove the complexity from photo editing, enabling users of all skill levels to achieve flawless results without expensive software or technical expertise.
+            </p>
+          </section>
 
-            {/* Team Section */}
-            <section className="mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Meet Our Team</h2>
-              <p className="text-gray-700 leading-relaxed">
-                Behind <span className="font-bold">Appmontize Media</span> is a team of visionary
-                leaders and innovative minds. Together, we are dedicated to turning ideas into
-                reality:
-              </p>
-              <ul className="list-disc ml-6 mt-4 space-y-2">
-                <li className="text-gray-700">
-                  <span className="font-bold">Aditya Agarwal</span> – Co-Founder & Director
-                </li>
-                <li className="text-gray-700">
-                  <span className="font-bold">Nikhil Vatts</span> – Co-Founder & Director
-                </li>
-                <li className="text-gray-700">
-                  <span className="font-bold">Vibhu Jain</span> – Co-Founder & Director
-                </li>
-              </ul>
-              <p className="text-gray-700 leading-relaxed mt-4">
-                Our technical endeavors are spearheaded by{" "}
-                <span className="font-bold">Abhishek</span>, our tech team lead, who brings a wealth
-                of expertise and creativity to every tool we build. From ideation to execution,
-                Abhishek ensures our tools meet the highest standards of quality and functionality.
-              </p>
-            </section>
+          <section className="mb-8">
+            <h2 className="text-xl font-semibold text-cyan-300 mb-4">Our Vision</h2>
+            <p className="text-gray-200">
+              We envision a world where creativity knows no bounds. CleanMyBg strives to be the leading platform for image enhancement, empowering users worldwide to bring their ideas to life with professional-quality visuals. Under CYPHERNXT LABS LLP’s commitment to innovation, we are continuously evolving to meet the needs of our global community.
+            </p>
+          </section>
 
-            {/* Promise Section */}
-            <section>
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Our Promise</h2>
-              <p className="text-gray-700 leading-relaxed">At Appmontize Media, we are committed to:</p>
-              <ul className="list-disc ml-6 mt-4 space-y-2">
-                <li className="text-gray-700">
-                  <span className="font-bold">Innovation</span>: Constantly exploring new
-                  technologies to improve our tools.
-                </li>
-                <li className="text-gray-700">
-                  <span className="font-bold">Quality</span>: Ensuring every tool is meticulously
-                  crafted and optimized for exceptional performance.
-                </li>
-                <li className="text-gray-700">
-                  <span className="font-bold">User Satisfaction</span>: Listening to our users and
-                  enhancing our solutions based on their needs.
-                </li>
-              </ul>
-              <p className="text-gray-700 leading-relaxed mt-4">
-                As we continue to grow, we remain focused on expanding our reach and pushing the
-                boundaries of what’s possible in the tech space. We invite you to join us on this
-                exciting journey as we continue to innovate and create tools that make life simpler
-                for everyone.
-              </p>
-            </section>
-          </main>
+          <section className="mb-8">
+            <h2 className="text-xl font-semibold text-cyan-300 mb-4">Why Choose CleanMyBg?</h2>
+            <ul className="list-disc list-inside text-gray-200 space-y-2">
+              <li><strong>AI-Powered Precision</strong>: Our advanced algorithms ensure accurate and seamless background removal.</li>
+              <li><strong>User-Friendly Interface</strong>: Designed for simplicity, making editing effortless for beginners and professionals alike.</li>
+              <li><strong>Secure Payments</strong>: Powered by Razorpay, our payment gateway ensures safe and reliable transactions.</li>
+              <li><strong>Fast Results</strong>: Process images in seconds, saving you time and effort.</li>
+              <li><strong>Global Reach</strong>: Backed by CYPHERNXT LABS LLP’s expertise, we serve users across the globe.</li>
+            </ul>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-xl font-semibold text-cyan-300 mb-4">About CYPHERNXT LABS LLP</h2>
+            <p className="text-gray-200 mb-4">
+              CYPHERNXT LABS LLP is a technology-driven company headquartered in New Delhi, India, dedicated to creating innovative solutions that simplify complex challenges. With a focus on artificial intelligence and user-centric design, CYPHERNXT LABS LLP develops products like CleanMyBg to empower individuals and businesses worldwide.
+            </p>
+            <p className="text-gray-200">
+              Registered Office: H NO 81B, Village Meethapur, Badarpur, South Delhi, New Delhi, Delhi 110044, India
+            </p>
+          </section>
+
+          <section className="mb-8 text-center">
+            <h2 className="text-xl font-semibold text-cyan-300 mb-4">Get Started Today</h2>
+            <p className="text-gray-200 mb-6">
+              Ready to transform your images? Join thousands of users who trust CleanMyBg for their editing needs.
+            </p>
+            <Link href="/upload" className="inline-block bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-8 py-4 rounded-full font-semibold hover:from-cyan-600 hover:to-blue-600 transition-all duration-200 glow-hover">
+           
+                Try CleanMyBg Now
+             
+            </Link>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-xl font-semibold text-cyan-300 mb-4">Contact Us</h2>
+            <p className="text-gray-200">
+              Have questions or need support? Reach out to our team at:
+              <br />
+              Email: <a href="mailto:support@cleanmybg.com" className="text-cyan-400 hover:underline">support@cleanmybg.com</a>
+              <br />
+              Address: H NO 81B, Village Meethapur, Badarpur, South Delhi, New Delhi, Delhi 110044, India
+            </p>
+          </section>
+        </main>
+      </div>
         </div>
       </body>
     </html>

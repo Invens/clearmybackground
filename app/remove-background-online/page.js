@@ -1,16 +1,20 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header/page";
 import Section2 from "@/components/homeSection/section2";
 import Footer from "@/components/footer/page";
 import "react-before-after-slider-component/dist/build.css";
 import Head from "next/head";
+import axios from "axios";
 
 export default function Homepage() {
   const [error, setError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [exampleImages, setExampleImages] = useState([]);
   const router = useRouter();
+  const starCanvasRef = useRef(null);
 
   // Handle file selection
   const handleFileChange = (event) => {
@@ -48,62 +52,244 @@ export default function Homepage() {
     router.push(`/result?imageUrl=${encodeURIComponent(imageUrl)}`);
   };
 
-  // Water simulation effect
+  // Fetch example images from Pexels
   useEffect(() => {
-    const canvas = document.getElementById("waterCanvas");
-    const ctx = canvas.getContext("2d");
+    const fetchPexelsImages = async () => {
+      const queries = ["dog", "zebra", "human"];
+      const images = [];
+      try {
+        for (const query of queries) {
+          const response = await axios.get("https://api.pexels.com/v1/search", {
+            headers: {
+              Authorization: "8clDBhjUV7XYRmTMpMLOPewgEzQk9YQa4pceuN1lm4KaFRYxRFlm4rpR",
+            },
+            params: {
+              query,
+              per_page: 1,
+            },
+          });
+          if (response.data.photos.length > 0) {
+            images.push({
+              src: response.data.photos[0].src.large,
+              alt: `Example: ${query} image with AI-removed background`,
+            });
+          }
+        }
+        setExampleImages(images);
+      } catch (error) {
+        console.error("Pexels API error:", error);
+      }
+    };
+    fetchPexelsImages();
+  }, []);
+
+  // Starfield, Shooting Stars, and Comets Animation
+  useEffect(() => {
+    const starCanvas = starCanvasRef.current;
+    const starCtx = starCanvas.getContext("2d");
     let width = window.innerWidth;
     let height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
+    starCanvas.width = width;
+    starCanvas.height = height;
 
-    let ripples = [];
+    const stars = [];
+    const shootingStars = [];
+    const comets = [];
+    const starCount = 150;
+    const centerRadius = 300;
 
-    const resizeCanvas = () => {
+    // Static Star
+    class Star {
+      constructor() {
+        let x, y, dist;
+        do {
+          x = Math.random() * width;
+          y = Math.random() * height;
+          dist = Math.hypot(x - width / 2, y - height / 2);
+        } while (dist < centerRadius);
+        this.x = x;
+        this.y = y;
+        this.radius = Math.random() * 2 + 1;
+        this.opacity = Math.random() * 0.5 + 0.3;
+        this.phase = Math.random() * Math.PI * 2;
+      }
+
+      draw(time) {
+        starCtx.beginPath();
+        starCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        starCtx.fillStyle = `rgba(255, 255, 255, ${this.opacity * (0.5 + 0.5 * Math.sin(time * 0.001 + this.phase))})`;
+        starCtx.fill();
+      }
+    }
+
+    // Shooting Star
+    class ShootingStar {
+      constructor() {
+        // Start at a random edge (left, top, or right)
+        const edge = Math.floor(Math.random() * 3);
+        if (edge === 0) { // Left
+          this.x = 0;
+          this.y = Math.random() * height;
+        } else if (edge === 1) { // Top
+          this.x = Math.random() * width;
+          this.y = 0;
+        } else { // Right
+          this.x = width;
+          this.y = Math.random() * height;
+        }
+        // Random angle (30-60°) converted to radians
+        const angle = (Math.random() * 30 + 30) * Math.PI / 180;
+        this.vx = Math.cos(angle) * (Math.random() * 5 + 10); // Speed: 10-15px/frame
+        this.vy = Math.sin(angle) * (Math.random() * 5 + 10);
+        if (edge === 0) { // Left: move right
+          this.vx = Math.abs(this.vx);
+        } else if (edge === 2) { // Right: move left
+          this.vx = -Math.abs(this.vx);
+        }
+        this.radius = Math.random() * 1 + 1; // 1-2px
+        this.lifetime = Math.random() * 30 + 30; // 30-60 frames (~0.5-1s)
+        this.age = 0;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.age++;
+      }
+
+      draw() {
+        // Draw a line with a gradient tail
+        const tailLength = 20;
+        const gradient = starCtx.createLinearGradient(
+          this.x, this.y,
+          this.x - this.vx * tailLength / 15, this.y - this.vy * tailLength / 15
+        );
+        gradient.addColorStop(0, `rgba(255, 255, 255, ${1 - this.age / this.lifetime})`);
+        gradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
+        starCtx.beginPath();
+        starCtx.moveTo(this.x, this.y);
+        starCtx.lineTo(this.x - this.vx * tailLength / 15, this.y - this.vy * tailLength / 15);
+        starCtx.strokeStyle = gradient;
+        starCtx.lineWidth = 1;
+        starCtx.stroke();
+      }
+    }
+
+    // Comet
+    class Comet {
+      constructor() {
+        // Start at a random edge (left or top)
+        const edge = Math.floor(Math.random() * 2);
+        if (edge === 0) { // Left
+          this.x = 0;
+          this.y = Math.random() * height;
+        } else { // Top
+          this.x = Math.random() * width;
+          this.y = 0;
+        }
+        // Random angle (0-90°) converted to radians
+        const angle = Math.random() * 90 * Math.PI / 180;
+        this.vx = Math.cos(angle) * (Math.random() * 3 + 5); // Speed: 5-8px/frame
+        this.vy = Math.sin(angle) * (Math.random() * 3 + 5);
+        if (edge === 0) { // Left: move right
+          this.vx = Math.abs(this.vx);
+        }
+        this.radius = Math.random() * 2 + 2; // 2-4px
+        this.lifetime = Math.random() * 60 + 60; // 60-120 frames (~1-2s)
+        this.age = 0;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.age++;
+      }
+
+      draw() {
+        // Draw head
+        starCtx.beginPath();
+        starCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        starCtx.fillStyle = `rgba(200, 200, 255, ${1 - this.age / this.lifetime})`;
+        starCtx.fill();
+        // Draw tail
+        const tailLength = 40;
+        const gradient = starCtx.createLinearGradient(
+          this.x, this.y,
+          this.x - this.vx * tailLength / 8, this.y - this.vy * tailLength / 8
+        );
+        gradient.addColorStop(0, `rgba(200, 200, 255, ${0.8 * (1 - this.age / this.lifetime)})`);
+        gradient.addColorStop(1, `rgba(200, 200, 255, 0)`);
+        starCtx.beginPath();
+        starCtx.moveTo(this.x, this.y);
+        starCtx.lineTo(this.x - this.vx * tailLength / 8, this.y - this.vy * tailLength / 8);
+        starCtx.strokeStyle = gradient;
+        starCtx.lineWidth = 3;
+        starCtx.stroke();
+      }
+    }
+
+    // Initialize stars
+    for (let i = 0; i < starCount; i++) {
+      stars.push(new Star());
+    }
+
+    // Resize handler
+    const resize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
+      starCanvas.width = width;
+      starCanvas.height = height;
+      stars.length = 0;
+      for (let i = 0; i < starCount; i++) {
+        stars.push(new Star());
+      }
+      // Clear shooting stars and comets on resize
+      shootingStars.length = 0;
+      comets.length = 0;
     };
+    window.addEventListener("resize", resize);
 
-    window.addEventListener("resize", resizeCanvas);
+    // Animation loop
+    const render = () => {
+      starCtx.clearRect(0, 0, width, height);
 
-    const createRipple = (x, y) => {
-      ripples.push({ x, y, radius: 0, opacity: 1 });
-    };
+      // Draw static stars
+      stars.forEach((star) => star.draw(performance.now()));
 
-    document.addEventListener("mousemove", (e) => {
-      createRipple(e.clientX, e.clientY);
-    });
-
-    const animate = () => {
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "rgba(30, 144, 255, 0.1)";
-      ctx.fillRect(0, 0, width, height);
-
-      ripples.forEach((ripple, index) => {
-        ctx.beginPath();
-        ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(59, 130, 246, ${ripple.opacity})`;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ripple.radius += 2;
-        ripple.opacity -= 0.02;
-
-        if (ripple.opacity <= 0) {
-          ripples.splice(index, 1);
+      // Spawn shooting stars (2% chance)
+      if (Math.random() < 0.02 && shootingStars.length < 2) {
+        shootingStars.push(new ShootingStar());
+      }
+      // Update and draw shooting stars
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const ss = shootingStars[i];
+        ss.update();
+        ss.draw();
+        if (ss.age > ss.lifetime || ss.x < 0 || ss.x > width || ss.y < 0 || ss.y > height) {
+          shootingStars.splice(i, 1);
         }
-      });
+      }
 
-      requestAnimationFrame(animate);
+      // Spawn comets (1% chance)
+      if (Math.random() < 0.01 && comets.length < 1) {
+        comets.push(new Comet());
+      }
+      // Update and draw comets
+      for (let i = comets.length - 1; i >= 0; i--) {
+        const comet = comets[i];
+        comet.update();
+        comet.draw();
+        if (comet.age > comet.lifetime || comet.x < 0 || comet.x > width || comet.y < 0 || comet.y > height) {
+          comets.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(render);
     };
-
-    animate();
+    requestAnimationFrame(render);
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas);
-      document.removeEventListener("mousemove", createRipple);
+      window.removeEventListener("resize", resize);
     };
   }, []);
 
@@ -122,7 +308,7 @@ export default function Homepage() {
       },
       {
         "@type": "Question",
-        name: "Is ClearMyBackground really free?",
+        name: "Is cleanmybg really free?",
         acceptedAnswer: {
           "@type": "Answer",
           text: "Yes! Our tool is 100% free to use with no limits or subscriptions required.",
@@ -149,7 +335,7 @@ export default function Homepage() {
         name: "Does it preserve full resolution without quality loss?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Yes, ClearMyBackground provides full-resolution images with no quality loss, completely free of charge.",
+          text: "Yes, cleanmybg provides full-resolution images with no quality loss, completely free of charge.",
         },
       },
     ],
@@ -159,7 +345,7 @@ export default function Homepage() {
     <>
       {/* SEO Meta Tags and FAQ Schema */}
       <Head>
-        <title>AI Background Remover - Free Online Tool | ClearMyBackground</title>
+        <title>AI Background Remover - Free Online Tool | cleanmybg</title>
         <meta
           name="description"
           content="Remove backgrounds from images instantly with our free AI background remover. Create full-resolution transparent backgrounds online effortlessly for e-commerce, design, and more."
@@ -185,22 +371,22 @@ export default function Homepage() {
       </Head>
 
       <div
-        className="bg-black text-white flex flex-col items-center relative overflow-hidden"
+        className="bg-black text-white flex flex-col items-center relative overflow-hidden font-inter"
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        {/* Water Simulation Canvas */}
+        {/* Starfield Canvas */}
         <canvas
-          id="waterCanvas"
+          ref={starCanvasRef}
           className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: 0 }}
+          style={{ zIndex: 1 }}
         ></canvas>
 
         {/* Drag Overlay */}
         {isDragging && (
-          <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 border-4 border-dashed border-blue-500 animate-pulse">
-            <p className="text-4xl font-bold text-blue-400 tracking-wider">
+          <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 border-4 border-dashed border-blue-600">
+            <p className="text-4xl font-semibold text-white tracking-wide">
               DROP IMAGE
             </p>
           </div>
@@ -209,21 +395,21 @@ export default function Homepage() {
         <Header />
 
         {/* Hero Section */}
-        <section className="min-h-[70vh] flex flex-col items-center justify-center w-full max-w-2xl mt-20 px-6 z-10">
-          <h1 className="text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient mb-8">
-            AI Background Remover
+        <section className="min-h-[80vh] flex flex-col items-center justify-center w-full max-w-3xl mt-28 px-6 z-10">
+          <h1 className="text-3xl md:text-3xl font-bold text-white mb-6 text-center leading-tight">
+            AI-Powered Background Remover
           </h1>
-          <p className="text-lg text-gray-300 mb-6 text-center">
-            Remove backgrounds from images online with our free AI-powered tool. Create full-resolution transparent PNGs instantly.
+          <p className="text-lg text-yellow-500 font-bold mb-8 text-center max-w-2xl">
+            Effortlessly remove backgrounds from images with our free, AI-driven tool. Create high-quality, transparent PNGs in seconds for e-commerce, design, and more.
           </p>
 
           {/* Upload Area */}
-          <div className="w-full bg-gray-800 bg-opacity-50 backdrop-blur-md p-8 rounded-xl border border-gray-700 hover:border-blue-500 transition-all duration-300">
-            <h2 className="text-xl font-semibold text-gray-300 mb-4 text-center">
-              Free Background Removal Made Easy
+          <div className="w-full bg-transparent p-8 rounded-2xl border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 upload-card">
+            <h2 className="text-2xl font-semibold text-white mb-4 text-center">
+              Seamless Background Removal
             </h2>
             <div
-              className="border-2 border-dashed border-blue-600 p-6 rounded-lg text-center hover:bg-blue-900 hover:bg-opacity-20 transition-colors duration-200"
+              className="border-2 border-dashed border-blue-600 p-6 rounded-lg text-center hover:bg-blue-50 hover:bg-opacity-10 transition-colors duration-200"
               onDragOver={handleDragOver}
               onDrop={handleDrop}
             >
@@ -232,7 +418,7 @@ export default function Homepage() {
 
             <label
               htmlFor="fileInput"
-              className="mt-6 block w-full text-center bg-gradient-to-r from-blue-500 to-purple-600 py-3 rounded-lg font-medium tracking-wide cursor-pointer hover:from-blue-600 hover:to-purple-700 hover:shadow-glow transition-all duration-300"
+              className="mt-6 block w-full text-center bg-blue-600 text-white py-3 rounded-lg font-medium tracking-wide cursor-pointer hover:bg-blue-700 hover:shadow-md transition-all duration-300"
             >
               Upload Image
             </label>
@@ -246,174 +432,77 @@ export default function Homepage() {
             />
 
             {error && (
-              <p className="text-red-400 mt-4 text-center animate-fadeIn">
+              <p className="text-red-500 mt-4 text-center animate-fadeIn">
                 {error}
               </p>
             )}
           </div>
 
           {/* Example Images */}
-          <div className="mt-10 text-center">
-            <h2 className="text-xl font-semibold text-gray-300 mb-4">
-              Try Our AI Background Eraser with Examples
-            </h2>
-            <p className="text-gray-400 mb-4">
-              Test our transparent background maker with these sample images.
-            </p>
-            <div className="flex justify-center gap-4">
-              {[
-                {
-                  src: "/remove-background-from-image-example1.jpg",
-                  alt: "Example 1: AI-removed background image for e-commerce",
-                },
-                {
-                  src: "/remove-background-from-image-example2.jpg",
-                  alt: "Example 2: Transparent PNG created with AI background remover",
-                },
-                {
-                  src: "/remove-background-from-image-example3.jpg",
-                  alt: "Example 3: Free background removal for design projects",
-                },
-              ].map((item, index) => (
-                <img
-                  key={index}
-                  src={item.src}
-                  alt={item.alt}
-                  className="w-16 h-16 rounded-lg object-cover border border-gray-700 hover:border-blue-500 hover:scale-110 transition-all duration-300 cursor-pointer"
-                  onClick={() => {
-                    const imageUrl = window.location.origin + item.src;
-                    router.push(`/result?imageUrl=${encodeURIComponent(imageUrl)}`);
-                  }}
-                />
-              ))}
-            </div>
-          </div>
+          <div className="mt-12 text-center bg-gradient-to-r from-gray-900 to-blue-900 p-8 rounded-2xl border border-blue-500/30 shadow-xl max-w-4xl mx-auto animate-slideUp upload-card">
+  <h2 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300 mb-4 animate-pulse">
+    Explore with Example Images
+  </h2>
+  <p className="text-lg text-gray-200 font-medium mb-6 animate-fadeIn">
+    Test our AI background remover with these sample images.
+  </p>
+  <div className="flex justify-center gap-6">
+    {exampleImages.map((item, index) => (
+      <img
+        key={index}
+        src={item.src}
+        alt={item.alt}
+        className="w-24 h-24 rounded-lg object-cover border-2 border-gray-200 hover:border-blue-500 hover:ring-4 hover:ring-blue-500/50 hover:scale-110 hover:rotate-3 transition-all duration-300 cursor-pointer shadow-md"
+        onClick={() => {
+          router.push(`/result?imageUrl=${encodeURIComponent(item.src)}`);
+        }}
+      />
+    ))}
+  </div>
+</div>
+
         </section>
 
-        {/* How It Works Section */}
-        <section className="py-16 w-full max-w-4xl px-6 z-10">
-          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-8">
-            How Our AI Background Remover Works
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-gray-800 bg-opacity-50 backdrop-blur-md p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition-all duration-300">
-              <h3 className="text-xl font-semibold text-blue-400 mb-2">1. Upload</h3>
-              <p className="text-gray-300">
-                Drag and drop or upload your image to our free tool.
-              </p>
-            </div>
-            <div className="bg-gray-800 bg-opacity-50 backdrop-blur-md p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition-all duration-300">
-              <h3 className="text-xl font-semibold text-blue-400 mb-2">2. Process</h3>
-              <p className="text-gray-300">
-                Our AI instantly analyzes and removes the background.
-              </p>
-            </div>
-            <div className="bg-gray-800 bg-opacity-50 backdrop-blur-md p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition-all duration-300">
-              <h3 className="text-xl font-semibold text-blue-400 mb-2">3. Download</h3>
-              <p className="text-gray-300">
-                Get your full-resolution transparent PNG at no cost.
-              </p>
-            </div>
-          </div>
-        </section>
+      
 
-        <Section2 />
-
-        {/* Why Choose Us Section */}
-        <section className="py-16 w-full max-w-4xl px-6 z-10">
-          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-8">
-            Why Choose ClearMyBackground?
-          </h2>
-          <div className="space-y-6">
-            <div className="flex items-start gap-4">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-300">AI-Powered Precision</h3>
-                <p className="text-gray-400">
-                  Our advanced AI ensures accurate background removal, even with complex images.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-300">Completely Free</h3>
-                <p className="text-gray-400">
-                  No hidden fees—enjoy unlimited background removal at no cost.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-300">Full Resolution Quality</h3>
-                <p className="text-gray-400">
-                  Get high-quality, full-resolution images without any loss, completely free.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-300">Fast & Easy</h3>
-                <p className="text-gray-400">
-                  Create transparent backgrounds in seconds with a simple upload.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-16 w-full max-w-4xl px-6 z-10">
-          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-8">
-            Frequently Asked Questions
-          </h2>
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-xl font-semibold text-gray-300">
-                What is an AI background remover?
-              </h3>
-              <p className="text-gray-400">
-                An AI background remover uses artificial intelligence to automatically detect and remove backgrounds from images, leaving you with a transparent PNG.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-gray-300">
-                Is ClearMyBackground really free?
-              </h3>
-              <p className="text-gray-400">
-                Yes! Our tool is 100% free to use with no limits or subscriptions required.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-gray-300">
-                Can I use it for commercial projects?
-              </h3>
-              <p className="text-gray-400">
-                Absolutely. The transparent images you create are yours to use for e-commerce, design, or any other purpose.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-gray-300">
-                What file types are supported?
-              </h3>
-              <p className="text-gray-400">
-                We support all common image formats, including JPG, PNG, and more.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-gray-300">
-                Does it preserve full resolution without quality loss?
-              </h3>
-              <p className="text-gray-400">
-                Yes, ClearMyBackground provides full-resolution images with no quality loss, completely free of charge.
-              </p>
-            </div>
-          </div>
-        </section>
+       
       </div>
       <Footer />
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        .font-inter {
+          font-family: 'Inter', sans-serif;
+        }
+        .shadow-md {
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .shadow-lg {
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        section {
+          position: relative;
+          transform: translateY(0);
+          transition: transform 0.3s ease;
+        }
+        section:hover {
+          transform: translateY(-5px);
+        }
+        .upload-card {
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+        }
+      `}</style>
     </>
   );
 }
